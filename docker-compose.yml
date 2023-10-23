@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+
+  docker_apache:
+    build: apache/docker/.
+    hostname: ${DOMAIN}
+    restart: "no"
+    depends_on:
+      - docker_mysql
+    environment:
+      DOMAIN: ${DOMAIN}
+      APACHE_PORT: ${APACHE_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      OXID_ADMIN_USER: ${OXID_ADMIN_USER}
+      OXID_ADMIN_PASSWORD: ${OXID_ADMIN_PASSWORD}
+    ports:
+      - ${APACHE_PORT}:80
+      - ${APACHE_HTTPS_PORT}:443
+      - ${APACHE_SSH_PORT}:22
+    extra_hosts:
+      host.docker.internal: host-gateway
+
+  docker_mysql:
+    image: mysql:5.7
+    hostname: mysql.${DOMAIN}
+    restart: "no"
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+  docker_phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - ${PHPMYADMIN_PORT}:80
+    environment:
+      PMA_HOST: docker_mysql
