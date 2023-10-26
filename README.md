@@ -20,5 +20,5 @@ docker-compose build
 ### fire up container
 docker-compose up -d  
   
-To create multiple setups, name your setup manually:  
+To create multiple setups, name your setup manually:    
 docker-compose -pMYPROJECT up -d
