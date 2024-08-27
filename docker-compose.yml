@@ -16,6 +16,8 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       OXID_ADMIN_USER: ${OXID_ADMIN_USER}
       OXID_ADMIN_PASSWORD: ${OXID_ADMIN_PASSWORD}
+    volumes:
+      - ./apache/htdocs/:/var/www/html/:cached
     ports:
       - ${APACHE_PORT}:80
       - ${APACHE_HTTPS_PORT}:443

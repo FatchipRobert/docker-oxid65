@@ -8,7 +8,7 @@ RUN echo "Europe/Berlin" > /etc/timezone && dpkg-reconfigure -f noninteractive t
 # install packages
 RUN apt-get update -y && \
   apt-get install -y --no-install-recommends \
-  less vim wget unzip dos2unix rsync git default-mysql-client libzip-dev ssl-cert sudo openssh-server \
+  less vim wget unzip dos2unix rsync git default-mysql-client libzip-dev ssl-cert \
   libcurl4-openssl-dev libfreetype6 libjpeg62-turbo libpng-dev libjpeg-dev libxml2-dev libxpm4 && \
   apt-get clean && \
   apt-get autoremove -y && \
@@ -16,7 +16,7 @@ RUN apt-get update -y && \
   echo "export TERM=xterm" >> /root/.bashrc
 
 #xdebug
-RUN pecl install xdebug && docker-php-ext-enable xdebug \
+RUN pecl install xdebug-3.1.5 && docker-php-ext-enable xdebug \
   && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
   && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
   && echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
@@ -48,11 +48,6 @@ COPY ./files/config.inc.php /oxid/config.inc.php
 # apache stuff
 RUN /usr/sbin/a2enmod rewrite && /usr/sbin/a2enmod headers && /usr/sbin/a2enmod expires && /usr/sbin/a2enmod ssl
 COPY ./files/000-default.conf /etc/apache2/sites-available/000-default.conf
-
-RUN ["/bin/bash", "-c", "chpasswd <<<'root:docker'"]
-
-# change ssh config
-COPY ./files/sshd_config /etc/ssh/sshd_config
 
 # EXECUTED ON EVERY START
 ENTRYPOINT ["/init_script.sh"]

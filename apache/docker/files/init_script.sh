@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-echo "Restart ssh server"
-/etc/init.d/ssh restart
-
 CONTAINER_FIRST_STARTUP="CONTAINER_FIRST_STARTUP"
 if [ ! -e /$CONTAINER_FIRST_STARTUP ];
 then
