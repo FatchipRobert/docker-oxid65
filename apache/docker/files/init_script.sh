@@ -9,7 +9,7 @@ if [ ! -e /$CONTAINER_FIRST_STARTUP ];
 then
     touch /$CONTAINER_FIRST_STARTUP
 
-    sudo -u www-data composer create-project --no-dev oxid-esales/oxideshop-project . dev-b-6.5-ce
+    sudo -u www-data composer create-project --no-dev oxid-esales/oxideshop-project . dev-b-6.1-ce
 
     chmod -R 777 /var/www/html
 

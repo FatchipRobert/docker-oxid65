@@ -1,4 +1,4 @@
-FROM php:8.0-apache
+FROM php:7.4-apache
 
 MAINTAINER robert.mueller@fatchip.de
 
@@ -16,21 +16,20 @@ RUN apt-get update -y && \
   echo "export TERM=xterm" >> /root/.bashrc
 
 #xdebug
-RUN pecl install xdebug && docker-php-ext-enable xdebug \
-  && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-  && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-  && echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-  && echo "xdebug.log_level=0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-  && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-  && echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-
+#RUN pecl install xdebug && docker-php-ext-enable xdebug \
+#  && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+#  && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+#  && echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+#  && echo "xdebug.log_level=0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+#  && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+#
 # install php extensions
 RUN docker-php-ext-configure gd --with-jpeg=/usr/local/ && \
   docker-php-ext-install -j$(nproc) zip bcmath soap pdo_mysql mysqli gd
 
 # composer stuff
 RUN php -r 'readfile("https://getcomposer.org/installer");' > composer-setup.php \
-  && php composer-setup.php --install-dir=/usr/local/bin --version=2.5.5 --filename=composer \
+  && php composer-setup.php --install-dir=/usr/local/bin --version=1.10.27 --filename=composer \
   && rm -f composer-setup.php \
   && chown www-data:www-data /var/www
 
