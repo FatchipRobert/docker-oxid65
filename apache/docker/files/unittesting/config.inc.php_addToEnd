@@ -1,0 +1,4 @@
+
+    if (defined('OXID_PHP_UNIT')) {
+        include "config.inc.TEST.php";
+    }

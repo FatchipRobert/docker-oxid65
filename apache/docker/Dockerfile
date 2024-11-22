@@ -1,4 +1,4 @@
-FROM php:8.0-apache
+FROM php:7.4-apache
 
 MAINTAINER robert.mueller@fatchip.de
 
@@ -8,7 +8,7 @@ RUN echo "Europe/Berlin" > /etc/timezone && dpkg-reconfigure -f noninteractive t
 # install packages
 RUN apt-get update -y && \
   apt-get install -y --no-install-recommends \
-  less vim wget zip unzip dos2unix rsync git default-mysql-client libzip-dev ssl-cert sudo openssh-server \
+  less vim wget unzip dos2unix rsync git default-mysql-client libzip-dev ssl-cert sudo openssh-server \
   libcurl4-openssl-dev libfreetype6 libjpeg62-turbo libpng-dev libjpeg-dev libxml2-dev libxpm4 && \
   apt-get clean && \
   apt-get autoremove -y && \
@@ -16,13 +16,15 @@ RUN apt-get update -y && \
   echo "export TERM=xterm" >> /root/.bashrc
 
 #xdebug
-RUN pecl install xdebug && docker-php-ext-enable xdebug \
-  && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+RUN pecl install xdebug-3.1.6 && docker-php-ext-enable xdebug \
+  && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
   && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
   && echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
   && echo "xdebug.log_level=0" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
   && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
   && echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+RUN echo 'memory_limit = 2048M' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini;
 
 # install php extensions
 RUN docker-php-ext-configure gd --with-jpeg=/usr/local/ && \
@@ -41,6 +43,9 @@ RUN chmod 777 /init_script.sh # && chmod 777 /init_script.d/*
 
 # fix windows line endings if needed
 RUN dos2unix /init_script.sh
+
+RUN mkdir /unittesting
+COPY ./files/unittesting/ /unittesting/
 
 RUN mkdir /oxid
 COPY ./files/config.inc.php /oxid/config.inc.php

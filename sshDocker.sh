@@ -1,0 +1,1 @@
+ssh -o UserKnownHostsFile=/dev/null root@localhost -p2222
